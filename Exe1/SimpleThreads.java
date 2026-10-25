@@ -3,6 +3,7 @@
  * Starts several threads, each printing to the terminal.
  * Run:  java SimpleThreads.java   (or javac + java SimpleThreads)
  */
+package Exe1;
 public class SimpleThreads {
 
     static class Worker implements Runnable {

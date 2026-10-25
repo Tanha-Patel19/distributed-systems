@@ -4,8 +4,8 @@
  * that a synchronized version fixes it.
  * Run:  java CounterDemo.java
  */
+package Exe1;
 import java.util.concurrent.CountDownLatch;
-
 
 public class CounterDemo {
 
