@@ -1,61 +1,51 @@
+package Exe1;
+
 /**
  * Task 2: Synchronization.
+ * One thread increments, one decrements the same counter.
+ * Both do the same number of steps, so the result should be 0.
  * Shows thread interference on an unsynchronized Counter and
  * that a synchronized version fixes it.
- * Run:  java CounterDemo.java
  */
-package Exe1;
-import java.util.concurrent.CountDownLatch;
-
 public class CounterDemo {
 
-    static final int ITERATIONS = 10_000_000;
+    static final int ITERATIONS = 10000000;
 
-    /**
-     * One thread increments N times, another decrements N times -> expected result 0.
-     * A latch makes both threads start their loops at (almost) the same moment,
-     * otherwise the first thread may finish before the second even starts.
-     */
-    static int run(Counter counter) throws InterruptedException {
-        CountDownLatch go = new CountDownLatch(1);
+    // Starts both threads on the given counter, waits for them, returns the result
+    static int test(Counter counter) throws InterruptedException {
         Thread inc = new Thread(() -> {
-            await(go);
-            for (int i = 0; i < ITERATIONS; i++) counter.increment();
+            for (int i = 0; i < ITERATIONS; i++) {
+                counter.increment();
+            }
         });
         Thread dec = new Thread(() -> {
-            await(go);
-            for (int i = 0; i < ITERATIONS; i++) counter.decrement();
+            for (int i = 0; i < ITERATIONS; i++) {
+                counter.decrement();
+            }
         });
         inc.start();
         dec.start();
-        go.countDown();   // release both threads
         inc.join();
         dec.join();
         return counter.value();
     }
 
-    private static void await(CountDownLatch l) {
-        try { l.await(); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-    }
-
     public static void main(String[] args) throws InterruptedException {
-        final int RUNS = 5;
+        System.out.println("Correct result would be 0 every time.");
 
-        System.out.println("Expected result every time: 0\n");
-
-        System.out.println("--- Unsynchronized Counter ---");
-        for (int r = 1; r <= RUNS; r++) {
-            System.out.println("Run " + r + ": " + run(new Counter()));
+        System.out.println("--- Counter (not synchronized) ---");
+        for (int run = 1; run <= 5; run++) {
+            System.out.println("Run " + run + ": " + test(new Counter()));
         }
 
-        System.out.println("\n--- SynchronizedCounter ---");
-        for (int r = 1; r <= RUNS; r++) {
-            System.out.println("Run " + r + ": " + run(new SynchronizedCounter()));
+        System.out.println("--- SynchronizedCounter ---");
+        for (int run = 1; run <= 5; run++) {
+            System.out.println("Run " + run + ": " + test(new SynchronizedCounter()));
         }
     }
 }
 
-// Unsynchronized version from the exercise sheet
+// Counter exactly as given on the exercise sheet (not synchronized)
 class Counter {
     private int c = 0;
 
@@ -76,9 +66,17 @@ class Counter {
     }
 }
 
-// Synchronized version: only one thread at a time may be inside any of these methods
+// Same counter, but synchronized : only one thread at a time inside a method
 class SynchronizedCounter extends Counter {
-    @Override public synchronized void increment() { super.increment(); }
-    @Override public synchronized void decrement() { super.decrement(); }
-    @Override public synchronized int value()      { return super.value(); }
+    public synchronized void increment() {
+        super.increment();
+    }
+
+    public synchronized void decrement() {
+        super.decrement();
+    }
+
+    public synchronized int value() {
+        return super.value();
+    }
 }
