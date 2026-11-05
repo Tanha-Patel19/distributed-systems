@@ -1,10 +1,12 @@
+package Exe2;
+
 import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.util.StringTokenizer;
 
 public class SimpleHttpServer {
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         int port = 9090;
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);

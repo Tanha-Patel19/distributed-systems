@@ -1,8 +1,10 @@
+package Exe2;
+
 import java.io.*;
 import java.net.*;
 
 public class SimpleHttpClient {
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         String host = "localhost";
         int port = 9090;
         String path = "/index.html";
